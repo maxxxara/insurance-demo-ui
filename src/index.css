@@ -938,6 +938,23 @@ textarea.control {
   line-height: 0;
 }
 
+.preview__trigger {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+  line-height: 0;
+}
+
+.preview__trigger:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
 .preview__image {
   display: block;
   width: 100%;
@@ -967,6 +984,59 @@ textarea.control {
   font-size: 12.5px;
   line-height: 1.45;
   color: var(--muted);
+}
+
+/* ---------- enlarged document ---------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 18, 28, 0.82);
+  cursor: zoom-out;
+  animation: fade 0.18s ease-out;
+}
+
+.lightbox__frame {
+  position: relative;
+  /* as large as the viewport allows, keeping the page's proportions */
+  width: min(94vw, calc(94vh * 0.708));
+  aspect-ratio: 900 / 1271;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: var(--surface);
+  cursor: default;
+  line-height: 0;
+}
+
+.lightbox__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox__close {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .pill {
@@ -1240,6 +1310,7 @@ textarea.control {
     max-height: 70vh;
     overflow-y: auto;
   }
+  .preview__trigger,
   .preview__image {
     height: auto;
   }
