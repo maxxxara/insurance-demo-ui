@@ -881,8 +881,11 @@ textarea.control {
 /* ---------- source document preview ---------- */
 
 .result--split {
+  /* the whole page fits the viewport with no scrolling, so its width follows
+     the page ratio (900/1271) from whatever height is left over */
+  --preview-width: min(560px, calc((100vh - 190px) * 0.708));
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 440px;
+  grid-template-columns: minmax(0, 1fr) calc(var(--preview-width) + 34px);
   gap: 28px;
   align-items: start;
 }
@@ -893,7 +896,7 @@ textarea.control {
 
 .result__aside {
   position: sticky;
-  top: 88px;
+  top: 24px;
   min-width: 0;
 }
 
@@ -926,8 +929,9 @@ textarea.control {
 
 .preview__stage {
   position: relative;
-  max-height: calc(100vh - 260px);
-  overflow-y: auto;
+  width: 100%;
+  aspect-ratio: 900 / 1271;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--canvas);
@@ -937,7 +941,7 @@ textarea.control {
 .preview__image {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .preview__overlay {
@@ -1186,9 +1190,10 @@ textarea.control {
   }
 }
 
-@media (max-width: 1180px) {
+/* narrower viewports cannot spare the full width, so cap it before the columns squeeze */
+@media (max-width: 1280px) {
   .result--split {
-    grid-template-columns: minmax(0, 1fr) 340px;
+    --preview-width: min(380px, calc((100vh - 190px) * 0.708));
     gap: 20px;
   }
 }
@@ -1229,7 +1234,13 @@ textarea.control {
   .result__aside {
     position: static;
   }
+  /* stacked under the fields, so the page scrolls inside the panel instead */
   .preview__stage {
+    aspect-ratio: auto;
     max-height: 70vh;
+    overflow-y: auto;
+  }
+  .preview__image {
+    height: auto;
   }
 }
