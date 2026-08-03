@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
 import type { MockPoly } from "../data/mockAnchors";
 
@@ -56,10 +57,25 @@ type DocumentPreviewProps = {
   polys: MockPoly[];
 };
 
+/** Diameter of the hover magnifier, and how much it enlarges the page. */
+const LENS_SIZE = 190;
+const LENS_SCALE = 2.6;
+
 const DocumentPreview = ({ pages, page, polys }: DocumentPreviewProps) => {
   const stageRef = useRef<HTMLDivElement>(null);
   const [zoomed, setZoomed] = useState(false);
+  /** Cursor position inside the trigger, in px — null when not hovering. */
+  const [lens, setLens] = useState<{ x: number; y: number } | null>(null);
+  const [frame, setFrame] = useState({ width: 0, height: 0 });
   const source = pages[page - 1];
+
+  const trackLens = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== "mouse") return;
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    setFrame({ width: rect.width, height: rect.height });
+    setLens({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+  };
 
   const scrollToHighlight = () => {
     const stage = stageRef.current;
@@ -109,6 +125,8 @@ const DocumentPreview = ({ pages, page, polys }: DocumentPreviewProps) => {
           type="button"
           className="preview__trigger"
           onClick={() => setZoomed(true)}
+          onPointerMove={trackLens}
+          onPointerLeave={() => setLens(null)}
           aria-label="დოკუმენტის გადიდება"
         >
           <img
@@ -118,6 +136,33 @@ const DocumentPreview = ({ pages, page, polys }: DocumentPreviewProps) => {
             onLoad={scrollToHighlight}
           />
           <Highlight polys={polys} />
+
+          {lens && !zoomed && (
+            <span
+              className="preview__lens"
+              style={{
+                width: LENS_SIZE,
+                height: LENS_SIZE,
+                left: lens.x,
+                top: lens.y,
+              }}
+              aria-hidden="true"
+            >
+              <span
+                className="preview__lens-content"
+                style={{
+                  width: frame.width * LENS_SCALE,
+                  height: frame.height * LENS_SCALE,
+                  transform: `translate(${LENS_SIZE / 2 - lens.x * LENS_SCALE}px, ${
+                    LENS_SIZE / 2 - lens.y * LENS_SCALE
+                  }px)`,
+                }}
+              >
+                <img className="preview__lens-image" src={source} alt="" />
+                <Highlight polys={polys} />
+              </span>
+            </span>
+          )}
         </button>
       </div>
 
