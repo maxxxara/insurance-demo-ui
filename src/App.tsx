@@ -8,6 +8,9 @@ import {
   getReferral,
   type ReferralRequestResult,
 } from "./api/client";
+import ProcessingSteps, {
+  PROCESSING_MIN_MS,
+} from "./components/ProcessingSteps";
 import { CLINICS, POLICIES } from "./data/mock";
 import { EMPTY_FORM, type FormState } from "./types";
 
@@ -55,7 +58,10 @@ const App = () => {
     const controller = new AbortController();
     abortRef.current = controller;
 
+    const loaderStartedAt = Date.now();
     setSubmitting(true);
+    setProcessing(true);
+    setStep(RESULT_STEP);
     setError(null);
 
     try {
@@ -75,20 +81,22 @@ const App = () => {
         controller.signal,
       );
 
-      setStep(RESULT_STEP);
       setSubmitting(false);
 
       if (created.status === "PENDING" || created.status === "PROCESSING") {
-        setProcessing(true);
         for (let attempt = 0; attempt < POLL_ATTEMPTS; attempt += 1) {
           await wait(POLL_INTERVAL_MS);
           created = await getReferral(created.requestId, controller.signal);
           if (created.status === "COMPLETED" || created.status === "FAILED")
             break;
         }
-        setProcessing(false);
       }
 
+      const elapsed = Date.now() - loaderStartedAt;
+      if (elapsed < PROCESSING_MIN_MS) await wait(PROCESSING_MIN_MS - elapsed);
+      if (controller.signal.aborted) return;
+
+      setProcessing(false);
       setResult(created);
     } catch (caught) {
       if (controller.signal.aborted) return;
@@ -113,10 +121,7 @@ const App = () => {
           (processing || !result ? (
             <div className="fade-in">
               <h1 className="page__title">მიმართვა მუშავდება</h1>
-              <div className="processing">
-                <span className="spinner spinner--green" />
-                დოკუმენტები იგზავნება დამუშავებაზე — გთხოვთ დაელოდოთ.
-              </div>
+              <ProcessingSteps />
             </div>
           ) : (
             <ResultView result={result} />

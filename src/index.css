@@ -942,6 +942,73 @@ textarea.control {
   margin-top: 20px;
 }
 
+.processing-steps {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.pstep {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: #fbfcfc;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.pstep--active {
+  border-color: #cbeade;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.pstep--pending {
+  opacity: 0.55;
+}
+
+.pstep__icon {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  margin-top: 1px;
+  color: var(--green-dark);
+}
+
+.pstep__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+}
+
+.pstep__body {
+  display: grid;
+  gap: 3px;
+}
+
+.pstep__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.pstep--done .pstep__title {
+  color: var(--ink-2);
+}
+
+.pstep__hint {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
 .banner {
   margin-top: 20px;
   border: 1px solid #f6d3d3;
