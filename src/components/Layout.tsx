@@ -97,9 +97,34 @@ export const Field = ({
   </div>
 );
 
-export const Row = ({ label, value }: { label: string; value: ReactNode }) => (
-  <div className="row">
-    <span className="row__label">{label}</span>
-    <span className="row__value">{value}</span>
-  </div>
-);
+export const Row = ({
+  label,
+  value,
+  anchorKey,
+  active,
+  onActivate,
+}: {
+  label: string;
+  value: ReactNode;
+  /** Document highlight this row points at; absent when the value was not located. */
+  anchorKey?: string;
+  active?: boolean;
+  onActivate?: (anchorKey: string) => void;
+}) => {
+  const linked = Boolean(anchorKey && onActivate);
+  const activate = linked ? () => onActivate?.(anchorKey as string) : undefined;
+
+  return (
+    <div
+      className={`row${linked ? " row--linked" : ""}${
+        active ? " row--active" : ""
+      }`}
+      onMouseEnter={activate}
+      onFocus={activate}
+      tabIndex={linked ? 0 : undefined}
+    >
+      <span className="row__label">{label}</span>
+      <span className="row__value">{value}</span>
+    </div>
+  );
+};

@@ -124,7 +124,10 @@ const App = () => {
               <ProcessingSteps />
             </div>
           ) : (
-            <ResultView result={result} />
+            <ResultView
+              result={result}
+              fileNames={form.files.map((file) => file.name)}
+            />
           ))}
 
         {error && (
