@@ -24,6 +24,7 @@
 
   --field-h: 54px;
   --content-max: 1330px;
+  --content-max-wide: 1760px;
   --sidebar-w: 300px;
   /* kept clear even when the sidebar is hidden, so the toggle never sits on content */
   --rail-w: 56px;
@@ -369,6 +370,12 @@ select {
   /* clear the fixed footer so the last field is never cropped */
   padding-bottom: calc(var(--footer-h) + 32px) !important;
   position: relative;
+}
+
+/* the result view puts the fields next to the document, so it gets the extra
+   width the forms do not need — all of it goes to the fields column */
+.page--wide {
+  max-width: var(--content-max-wide);
 }
 
 .page__cancel {
@@ -897,6 +904,11 @@ textarea.control {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 20px;
+}
+
+/* stays aligned with the wider result page */
+.footer__inner--wide {
+  max-width: var(--content-max-wide);
 }
 
 .footer__step {

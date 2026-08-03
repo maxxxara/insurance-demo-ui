@@ -203,7 +203,11 @@ const App = () => {
         refreshToken={listToken}
       />
 
-      <main className="page">
+      <main
+        className={`page${
+          step === RESULT_STEP && !processing && result ? " page--wide" : ""
+        }`}
+      >
         {step === 1 && <StepPolicy form={form} update={update} />}
         {step === 2 && <StepDetails form={form} update={update} />}
 
@@ -245,7 +249,7 @@ const App = () => {
 
       {step === RESULT_STEP && !processing && result && (
         <footer className="footer">
-          <div className="footer__inner">
+          <div className="footer__inner footer__inner--wide">
             <div />
             <div />
             <div className="footer__end">
