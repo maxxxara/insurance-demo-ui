@@ -1,7 +1,8 @@
 import { zipSync } from 'fflate';
 import { MAX_TOTAL_BYTES, MAX_TOTAL_MB } from '../data/mock';
 
-const API_BASE = '/api';
+const API_ORIGIN = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '');
+const API_BASE = `${API_ORIGIN}/api`;
 
 export type ReferralSource = 'IMEDI_L_WEB' | 'IMEDI_L_APP' | 'HP_PORTAL';
 
@@ -127,7 +128,7 @@ export const getReferral = async (
 
 export const checkHealth = async (): Promise<boolean> => {
   try {
-    const response = await fetch('/health', {
+    const response = await fetch(`${API_ORIGIN}/health`, {
       signal: AbortSignal.timeout(2500)
     });
     return response.ok;
