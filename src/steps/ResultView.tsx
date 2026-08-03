@@ -4,6 +4,7 @@ import DocumentPreview from "../components/DocumentPreview";
 import {
   findMockAnchor,
   isMockDocument,
+  looksLikeMockDocument,
   MOCK_ANCHORS,
   MOCK_PAGES,
   type MockPoly,
@@ -105,7 +106,10 @@ const ReferralCard = ({
 
 type ResultViewProps = {
   result: ReferralRequestResult;
-  /** Names of the uploaded files; the demo highlights only apply to a known one. */
+  /**
+   * Names of the uploaded files; the demo highlights only apply to a known one.
+   * Empty for a request opened from the history, which the values identify instead.
+   */
   fileNames?: string[];
 };
 
@@ -119,7 +123,14 @@ const ResultView = ({ result, fileNames = [] }: ResultViewProps) => {
     ? (extraction.diagnoses as unknown[])
     : [];
 
-  const canPreview = useMemo(() => isMockDocument(fileNames), [fileNames]);
+  const canPreview = useMemo(() => {
+    if (fileNames.length > 0) return isMockDocument(fileNames);
+
+    return looksLikeMockDocument([
+      ...diagnoses.map(asText),
+      ...treatments.map((treatment) => asText(treatment.text)),
+    ]);
+  }, [fileNames, diagnoses, treatments]);
   const [activeKey, setActiveKey] = useState<string | null>(null);
 
   const activate: Activate = (value) => {

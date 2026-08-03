@@ -36,15 +36,39 @@ export type ReferralValidation = {
   reason?: string;
 };
 
+export type ReferralRequestStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'COMPLETED'
+  | 'FAILED';
+
 export type ReferralRequestResult = {
   requestId: string;
-  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  status: ReferralRequestStatus;
   source: ReferralSource;
   extraction: Record<string, unknown> | null;
   clinicName: string | null;
   validations: ReferralValidation[] | null;
   referrals: ReferralItem[];
   processingError?: string | null;
+};
+
+/** One row of the history list; the full result is fetched per request id. */
+export type ReferralSummary = {
+  requestId: string;
+  status: ReferralRequestStatus;
+  source: ReferralSource;
+  clinicName: string | null;
+  patientName: string | null;
+  referralCount: number;
+  createdAt: string;
+};
+
+export type ReferralList = {
+  total: number;
+  limit: number;
+  offset: number;
+  items: ReferralSummary[];
 };
 
 const readFile = (file: File) =>
@@ -103,6 +127,21 @@ export const createReferral = async (
   const response = await fetch(`${API_BASE}/referrals`, {
     method: 'POST',
     body: form,
+    signal
+  });
+
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+
+  return response.json();
+};
+
+export const listReferrals = async (
+  signal?: AbortSignal,
+  limit = 50
+): Promise<ReferralList> => {
+  const response = await fetch(`${API_BASE}/referrals?limit=${limit}`, {
     signal
   });
 

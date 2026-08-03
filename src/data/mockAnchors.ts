@@ -270,6 +270,28 @@ const KEYS_BY_SPECIFICITY = [...MOCK_ANCHORS].sort(
 export const isMockDocument = (fileNames: string[]): boolean =>
   fileNames.some((name) => name.trim().startsWith(MOCK_DOCUMENT_STEM));
 
+/** How many distinct anchors a document must hit to be taken for the demo one. */
+const RECOGNITION_THRESHOLD = 3;
+
+/**
+ * Recognises the demo document from its extracted values.
+ *
+ * A request opened from the history carries no file names — the API stores the
+ * archive, not the names inside it — so we fall back to how many of the frozen
+ * anchors we can place in the values it produced.
+ */
+export const looksLikeMockDocument = (values: string[]): boolean => {
+  const hits = new Set<string>();
+
+  for (const value of values) {
+    const anchor = findMockAnchor(value);
+    if (anchor) hits.add(anchor.key);
+    if (hits.size >= RECOGNITION_THRESHOLD) return true;
+  }
+
+  return false;
+};
+
 /** Finds the highlight for a displayed value by the code written inside it. */
 export const findMockAnchor = (value: string): MockAnchor | undefined => {
   const haystack = value.toUpperCase();

@@ -78,6 +78,26 @@ export const AlertIcon = ({ size = 26 }: IconProps) => (
   </svg>
 );
 
+export const SidebarIcon = ({ size = 20 }: IconProps) => (
+  <svg {...base(size)} strokeWidth={1.7}>
+    <rect x="3" y="4" width="18" height="16" rx="2.5" />
+    <path d="M10 4v16" />
+  </svg>
+);
+
+export const PlusIcon = ({ size = 17 }: IconProps) => (
+  <svg {...base(size)} strokeWidth={2}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export const RefreshIcon = ({ size = 16 }: IconProps) => (
+  <svg {...base(size)} strokeWidth={1.8}>
+    <path d="M20 11a8 8 0 1 0-.6 4" />
+    <path d="M20 4v7h-7" />
+  </svg>
+);
+
 export const ArrowLeft = ({ size = 18 }: IconProps) => (
   <svg {...base(size)}>
     <path d="M19 12H5M11 18l-6-6 6-6" />
