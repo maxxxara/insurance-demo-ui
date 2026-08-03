@@ -46,7 +46,7 @@ const ReferralCard = ({ referral }: { referral: ReferralItem }) => {
           <Row label="მომსახურება" value={asText(fields.service)} />
         )}
         {fields.price !== undefined && (
-          <Row label="ფასი" value={asText(fields.price)} />
+          <Row label="პრაისი" value={asText(fields.price)} />
         )}
         {fields.diagnose !== undefined && (
           <Row label="დიაგნოზი" value={asText(fields.diagnose)} />
