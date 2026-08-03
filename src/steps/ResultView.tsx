@@ -130,6 +130,10 @@ const ResultView = ({ result }: ResultViewProps) => {
         </div>
       )}
 
+      <h2 className="section-title section-title--divider">
+        გამოწერილი მიმართვები
+      </h2>
+
       {result.referrals.map((referral) => (
         <ReferralCard key={referral.id} referral={referral} />
       ))}

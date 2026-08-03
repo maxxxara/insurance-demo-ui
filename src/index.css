@@ -485,6 +485,12 @@ textarea.control {
   color: var(--green-dark);
 }
 
+.section-title--divider {
+  margin-top: 44px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
 .grid-3 {
   display: grid;
   grid-template-columns: 1.6fr 1.05fr 0.55fr;
