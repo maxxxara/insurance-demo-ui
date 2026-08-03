@@ -13,6 +13,11 @@ const TYPE_LABELS: Record<string, string> = {
   MEDICATION: "მედიკამენტი",
 };
 
+const TREATMENT_TYPE_LABELS: Record<string, string> = {
+  ambulatory: "ამბულატორიული",
+  medication: "მედიკამენტური",
+};
+
 const asText = (value: unknown): string => {
   if (value === null || value === undefined || value === "") return "—";
   if (typeof value === "string" || typeof value === "number")
@@ -72,6 +77,9 @@ type ResultViewProps = {
 const ResultView = ({ result }: ResultViewProps) => {
   const extraction = (result.extraction ?? {}) as Record<string, unknown>;
   const patient = (extraction.patient ?? {}) as Record<string, unknown>;
+  const treatments = Array.isArray(extraction.treatments)
+    ? (extraction.treatments as Array<Record<string, unknown>>)
+    : [];
 
   return (
     <div className="fade-in">
@@ -93,6 +101,28 @@ const ResultView = ({ result }: ResultViewProps) => {
               value={asText(extraction.clinicName ?? result.clinicName)}
             />
             <Row label="დიაგნოზები" value={asText(extraction.diagnoses)} />
+            <Row
+              label="რეკომენდაციები"
+              value={
+                treatments.length ? (
+                  <span className="treatments">
+                    {treatments.map((treatment, index) => (
+                      <span className="treatment" key={index}>
+                        <span className="treatment__type">
+                          {TREATMENT_TYPE_LABELS[String(treatment.type)] ??
+                            asText(treatment.type)}
+                        </span>
+                        <span className="treatment__text">
+                          {asText(treatment.text)}
+                        </span>
+                      </span>
+                    ))}
+                  </span>
+                ) : (
+                  "—"
+                )
+              }
+            />
             <Row label="ექიმი" value={asText(extraction.doctor)} />
             <Row
               label="ბეჭედი / ხელმოწერა"
